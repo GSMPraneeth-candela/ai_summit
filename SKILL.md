@@ -5,14 +5,26 @@ description: Run LANforge YouTube interop tests with the bundled Playwright and 
 
 ## Connect LANforge MCP
 
-Use the demo's Streamable HTTP LANforge MCP server at `octagon-last-yoga.ngrok-free.dev`. The full URL contains a private path. Reuse the connected server if it exposes the LANforge tools and matches the configured endpoint. The preferred registration name is `octagon-last-yoga`.
+Reuse the existing `octagon-last-yoga` LANforge MCP connection if it matches the endpoint below and exposes the LANforge tools. If the registration is missing, run:
 
-During setup, if the server is missing in Codex, register it with `codex mcp add octagon-last-yoga --url "$LANFORGE_MCP_URL"` using the full endpoint supplied privately by the lab operator. If the URL is unavailable to the shell, use the private-input command in [README.md](README.md). If an existing registration points elsewhere, report the mismatch before replacing it. Check that the current session exposes the tools before continuing. If it does not, have the user start a fresh session and resume setup. The LANforge manager IP is a separate input and must be passed as `unit` on relevant calls.
+```bash
+codex mcp add octagon-last-yoga --url 'https://octagon-last-yoga.ngrok-free.dev/TzkT2lJGo5nvDHJMfec3mpK0g7KF89UDNjJHFQO609Y/mcp'
+```
+
+If an existing registration points elsewhere, report the mismatch before replacing it. Check that the current session exposes the tools before continuing. If it does not, have the user start a fresh session and resume setup. Pass the user's LANforge manager IP separately as `unit` on relevant calls.
 
 ## Set up the laptops
 
 1. Use `real_devices` on the requested manager for the LANforge inventory. On an initial setup request, enumerate all real Linux, macOS and Windows laptops. Use the returned OS and management IP for deployment and the EID for LANforge runs. Skip offline and busy clients and report them. Use the management network for SSH.
-2. Verify SSH host keys against the lab's trusted inventory. The documented default login usernames on the standard LANforge images are `lanforge` on Linux and macOS and `Administrator` on Windows. The original deployment README documents a shared factory password for those images. Use that password only for devices the operator confirms still use those defaults, and obtain it from the lab's private copy of that README or its approved credential source. Prefer a configured SSH key or agent. If password authentication is required, use an approved private mechanism or have the operator enter it at an SSH prompt. Stop on authentication failure and report the affected EID. Never echo credentials, pass passwords in command arguments, or try alternate passwords.
+2. Verify SSH host keys against the lab's trusted inventory. Use an existing approved SSH key or agent when configured. Otherwise use the following defaults for standard LANforge lab laptops returned by the requested manager. If the operator provided different credentials, use those instead.
+
+   | OS | SSH username | SSH password |
+   |---|---|---|
+   | Linux | `lanforge` | `lanforge` |
+   | macOS | `lanforge` | `lanforge` |
+   | Windows | `Administrator` | `lanforge` |
+
+   Supply the password through SSH authentication rather than in a command argument. Stop on authentication failure and report the affected EID. Keep credentials out of run reports and logs.
 3. Confirm the launcher path and account over SSH before installing. These are the standard paths. The venv goes under the deployment root, beside the `youtube` directory.
 
    | OS | Deployment root | Venv interpreter relative to root |
