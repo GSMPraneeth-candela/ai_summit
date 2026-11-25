@@ -5,17 +5,27 @@ description: Prepare LANforge lab laptops for a requested LANforge-script YouTub
 
 ## Connect LANforge MCP
 
+The user can say “Connect the LANforge MCP server for this skill.” Register the endpoint below as a remote HTTP MCP server in the AI host running the skill. The URL is ready to register.
+
 Reuse the existing `octagon-last-yoga` LANforge MCP connection if it matches the endpoint below and exposes the LANforge tools. If the registration is missing, run:
 
 ```bash
 codex mcp add octagon-last-yoga --url 'https://octagon-last-yoga.ngrok-free.dev/TzkT2lJGo5nvDHJMfec3mpK0g7KF89UDNjJHFQO609Y/mcp'
 ```
 
-If an existing registration points elsewhere, report the mismatch before replacing it. Check that the current session exposes the tools before continuing. If it does not, have the user start a fresh session and resume setup. Pass the user's LANforge manager IP separately as `unit` on relevant calls.
+In Claude Code, use `claude mcp add --transport http octagon-last-yoga <URL-above>` instead. For a host without shell-based registration, use its MCP settings.
+
+If an existing registration points elsewhere, report the mismatch before replacing it. Confirm the current session exposes LANforge tools and that `real_devices` succeeds for the requested manager. If the tools are missing after registration, start a fresh session or ask the user to reopen the host if required, then resume setup. Pass the user's LANforge manager IP separately as `unit` on relevant calls. The MCP URL is the tool server address and the manager IP identifies the testbed.
+
+## How the skill works with LANforge MCP
+
+- **LANforge MCP** supplies the client inventory and owns the test plan, approval, launch, run status, and results. This skill applies to an explicitly requested LANforge-script YouTube test. That workflow uses the installed YouTube launcher on each selected laptop and picks up the script deployed by this skill. The QCM YouTube workflow uses a different runner.
+- **This skill** prepares the selected laptops and handles client-side recovery. Use MCP inventory to map each EID to its OS and management IP, then use SSH/SFTP over the management network. The deployment and repair steps apply to the existing YouTube client and its venv.
+- **The bundled `youtube.py`** drives playback with Playwright and handles supported selector changes with Playwright Healer. The LANforge controller receives the resulting logs and stats. A missing Python package or browser runtime is an SSH diagnosis and repair case. A stale locator with successful playback is a browser recovery case, confirmed in the healer report.
+
+For a requested run, wait until MCP has identified the target laptops, then complete the preparation below before launch. If the target list changes, verify readiness for the new list before launch. Keep MCP's approval flow and report any unready clients so the user can decide whether to proceed with a smaller set. After launch, monitor the same run and use SSH only on the affected client when evidence points to a laptop-side failure. Let MCP handle reruns and results.
 
 ## Set up the laptops
-
-Use this workflow when the user explicitly asks for skill setup or requests a LANforge-script YouTube test. LANforge MCP owns test selection, planning, approval, launch and results. Before it launches a requested test, verify that the selected laptops have the bundled client and its dependencies. Report any unready laptop before launch.
 
 1. Use `real_devices` on the requested manager for the LANforge inventory. For initial setup, enumerate all real Linux, macOS and Windows laptops. For test preparation, use only the laptops selected for that run. Match EIDs to the returned OS and management IP. Skip offline and busy clients and report them. Use the management network for SSH.
 2. Verify SSH host keys against the lab's trusted inventory. Use an existing approved SSH key or agent when configured. Otherwise use the following defaults for standard LANforge lab laptops returned by the requested manager. If the operator provided different credentials, use those instead.
