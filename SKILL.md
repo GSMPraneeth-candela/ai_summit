@@ -5,15 +5,13 @@ description: Prepare LANforge lab laptops for a requested LANforge-script YouTub
 
 ## Connect LANforge MCP
 
-The user can say “Connect the LANforge MCP server for this skill.” Register the endpoint below as a remote HTTP MCP server in the AI host running the skill. The URL is ready to register.
+Paste into Codex or Claude Code:
 
-Reuse the existing `octagon-last-yoga` LANforge MCP connection if it matches the endpoint below and exposes the LANforge tools. If the registration is missing, run:
-
-```bash
-codex mcp add octagon-last-yoga --url 'https://octagon-last-yoga.ngrok-free.dev/TzkT2lJGo5nvDHJMfec3mpK0g7KF89UDNjJHFQO609Y/mcp'
+```text
+Connect https://octagon-last-yoga.ngrok-free.dev/TzkT2lJGo5nvDHJMfec3mpK0g7KF89UDNjJHFQO609Y/mcp as the LANforge MCP server named octagon-last-yoga. Reuse the connection if it is already configured and verify that the LANforge tools are available.
 ```
 
-In Claude Code, use `claude mcp add --transport http octagon-last-yoga <URL-above>` instead. For a host without shell-based registration, use its MCP settings.
+When following this skill, perform the connection step in the current AI host using its remote HTTP MCP configuration. During skill setup, do this automatically before looking up laptops.
 
 If an existing registration points elsewhere, report the mismatch before replacing it. Confirm the current session exposes LANforge tools and that `real_devices` succeeds for the requested manager. If the tools are missing after registration, start a fresh session or ask the user to reopen the host if required, then resume setup. Pass the user's LANforge manager IP separately as `unit` on relevant calls. The MCP URL is the tool server address and the manager IP identifies the testbed.
 
