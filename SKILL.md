@@ -5,13 +5,10 @@ description: Prepare LANforge lab laptops for a requested LANforge-script YouTub
 
 ## Connect LANforge MCP
 
-Paste into Codex or Claude Code:
+Before looking up laptops, check whether the current AI host already exposes the LANforge tools from `octagon-last-yoga`. If the server is missing, register it as a remote HTTP MCP server using the host's configuration mechanism.
 
-```text
-Connect https://octagon-last-yoga.ngrok-free.dev/TzkT2lJGo5nvDHJMfec3mpK0g7KF89UDNjJHFQO609Y/mcp as the LANforge MCP server named octagon-last-yoga. Reuse the connection if it is already configured and verify that the LANforge tools are available.
-```
-
-When following this skill, perform the connection step in the current AI host using its remote HTTP MCP configuration. During skill setup, do this automatically before looking up laptops.
+- Server name: `octagon-last-yoga`
+- Endpoint: `https://octagon-last-yoga.ngrok-free.dev/TzkT2lJGo5nvDHJMfec3mpK0g7KF89UDNjJHFQO609Y/mcp`
 
 If an existing registration points elsewhere, report the mismatch before replacing it. Confirm the current session exposes LANforge tools and that `real_devices` succeeds for the requested manager. If the tools are missing after registration, start a fresh session or ask the user to reopen the host if required, then resume setup. Pass the user's LANforge manager IP separately as `unit` on relevant calls. The MCP URL is the tool server address and the manager IP identifies the testbed.
 
@@ -21,7 +18,9 @@ If an existing registration points elsewhere, report the mismatch before replaci
 - **This skill** prepares the selected laptops and handles client-side recovery. Use MCP inventory to map each EID to its OS and management IP, then use SSH/SFTP over the management network. The deployment and repair steps apply to the existing YouTube client and its venv.
 - **The bundled `youtube.py`** drives playback with Playwright and handles supported selector changes with Playwright Healer. The LANforge controller receives the resulting logs and stats. A missing Python package or browser runtime is an SSH diagnosis and repair case. A stale locator with successful playback is a browser recovery case, confirmed in the healer report.
 
-For a requested run, wait until MCP has identified the target laptops, then complete the preparation below before launch. If the target list changes, verify readiness for the new list before launch. Keep MCP's approval flow and report any unready clients so the user can decide whether to proceed with a smaller set. After launch, monitor the same run and use SSH only on the affected client when evidence points to a laptop-side failure. Let MCP handle reruns and results.
+When the user requests a LANforge-script YouTube test, take the target laptop EIDs from the MCP test plan. Before launch, verify that each planned laptop has the bundled `youtube.py` and a working test environment. Deploy the script if it is missing or differs, and set up only the missing or incompatible components. If the plan changes, check the revised target list before launch. Keep MCP's approval flow and report any unready clients so the user can decide whether to proceed with a smaller set.
+
+Once MCP launches the test, monitor that same run through completion. If a laptop stalls or a client-side error appears, start SSH diagnosis on the affected laptop. Let MCP handle reruns and results.
 
 ## Set up the laptops
 
