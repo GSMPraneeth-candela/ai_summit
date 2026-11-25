@@ -2,7 +2,19 @@
 
 Use Codex to run LANforge YouTube tests with Playwright and Playwright Healer. LANforge MCP supplies the client inventory and controls the run. SSH/SFTP handles laptop setup and troubleshooting.
 
-## 1. Install the skill
+## Quick start with Codex
+
+Paste this into Codex on a machine that can reach the lab. Replace `<MANAGER_IP>` with your LANforge manager's IP address.
+
+> Install the LANforge YouTube skill from https://github.com/GSMPraneeth-candela/ai_summit into ~/.agents/skills/lanforge-youtube. Reuse the installed copy if it already exists. Read its SKILL.md and follow its setup workflow for LANforge manager <MANAGER_IP>. Reuse the octagon-last-yoga MCP connection if available. If it needs to be registered, use LANFORGE_MCP_URL from the shell or tell me how to enter the full private URL locally. Discover all available, idle real laptops through LANforge MCP. Use the lab's approved SSH access to deploy the bundled youtube.py and prepare the test venv and Chromium. Report readiness per laptop and wait for my request before running a test.
+
+If Codex needs a fresh chat to load the new skill or MCP connection, paste this into that chat:
+
+> Use $lanforge-youtube to resume setup for LANforge manager <MANAGER_IP>. Check what is already configured and finish the remaining setup.
+
+Once setup is complete, use the prompt under [Run the demo](#4-run-the-demo).
+
+## 1. Install the skill manually
 
 Run this in Bash on the machine where Codex runs. That machine needs access to the MCP endpoint and to the laptops' management network. You'll also need the LANforge manager IP, approved SSH access, and a lab with the existing YouTube launcher, AdGuard assets, and YouTube controller on port 5002.
 
